@@ -62,6 +62,15 @@ BEGIN
 	SELECT 'logs_normalUser', 'Normal';
 END //
 
+DROP PROCEDURE IF EXISTS createHourlyMaint //
+CREATE PROCEDURE createHourlyMaint (name VARCHAR(128), frequency DECIMAL(8,2), last DECIMAL(8,2), OUT id INT)
+BEGIN
+    INSERT INTO hourlyMaint (name, frequency, last)
+        VALUES (name, frequency, last);
+    SET id = LAST_INSERT_ID();
+END //
+
+
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 
 GRANT EXECUTE ON PROCEDURE createLogSimple TO acct_normalUser;
