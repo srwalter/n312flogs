@@ -3,7 +3,7 @@ DELIMITER //
 DROP PROCEDURE IF EXISTS createLog //
 CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
 BEGIN
-    INSERT INTO logs (pilot, day, end_tach, end_hobbs, start_oil, oil_added, note)
+    INSERT INTO logs (pilot, day, endTach, endHobbs, startOil, oilAdded, note)
         VALUES (pilot, day, endTach, endHobbs, startOil, oilAdded, note);
     SET logNumber = LAST_INSERT_ID();
 END //
@@ -14,10 +14,10 @@ BEGIN
     UPDATE logs as l SET
         l.pilot = pilot,
         l.day = day,
-        l.end_tach = endTach,
-        l.end_hobbs = endHobbs,
-        l.start_oil = startOil,
-        l.oil_added = oilAdded,
+        l.endTach = endTach,
+        l.endHobbs = endHobbs,
+        l.startOil = startOil,
+        l.oiladded = oilAdded,
         l.note = note
         WHERE l.entry = logNumber;
     SET result = "Success";

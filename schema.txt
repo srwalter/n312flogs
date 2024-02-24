@@ -1,9 +1,9 @@
 CREATE TABLE logs (entry INT AUTO_INCREMENT PRIMARY KEY,
     pilot VARCHAR(128) NOT NULL,
     day DATE NOT NULL,
-    end_tach DECIMAL(8,2) NOT NULL,
-    end_hobbs DECIMAL(8,2) NOT NULL,
-    start_oil DECIMAL(4,2),
-    oil_added DECIMAL(4,2),
+    endTach DECIMAL(8,2) NOT NULL,
+    endHobbs DECIMAL(8,2) NOT NULL,
+    startOil DECIMAL(4,2),
+    oilAdded DECIMAL(4,2),
     note VARCHAR(255)
     );
