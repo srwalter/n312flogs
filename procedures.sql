@@ -56,3 +56,13 @@ BEGIN
         SELECT COUNT(*) INTO paginate_total FROM logs;
 END //
 
+DROP PROCEDURE IF EXISTS listRoles //
+CREATE PROCEDURE listRoles ()
+BEGIN
+	SELECT 'logs_normalUser', 'Normal';
+END //
+
+CREATE ROLE IF NOT EXISTS logs_normalUser;
+
+GRANT EXECUTE ON PROCEDURE createLogSimple TO acct_normalUser;
+GRANT EXECUTE ON PROCEDURE listLogs TO acct_normalUser;
