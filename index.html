@@ -12,13 +12,23 @@
         <script>
 database = "n312flogs";
 
+async function listLogs () {
+    clearUI();
+    await callProcedureListEditDelete('Log');
+    activateProcedure('listLogs');
+}
+
 async function onLoad() {
     if (!await checkLogin()) {
         return;
     }
     var q = parseQueryString(window.location.search);
     if (q['proc']) {
-        await callProcedure(q['proc']);
+        if (q['proc'] == 'listLogs') {
+            await listLogs();
+        } else {
+            await callProcedure(q['proc']);
+        }
         prefillForms();
     } else {
         await allRoutines();
