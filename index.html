@@ -24,14 +24,14 @@ async function onLoad() {
     }
     var q = parseQueryString(window.location.search);
     if (q['proc']) {
-        if (q['proc'] == 'listLogs') {
+        if (q['proc'] == 'listLogsAdvanced') {
             await listLogs();
         } else {
             await callProcedure(q['proc']);
         }
         prefillForms();
     } else {
-        await listLogs();
+        await await callProcedure('createLogSimple');
     }
 }
         </script>
@@ -46,8 +46,17 @@ async function onLoad() {
             Logs <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
+              <li><a href="?proc=createLogSimple">Create Log</a></li>
+            <li><a href="?proc=listLogs&autosubmit=listLogs">List Logs</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Advanced <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
               <li><a href="?proc=createLog">Create Log</a></li>
-            <li><a href="?proc=listLogs">List Logs</a></li>
+            <li><a href="?proc=listLogsAdvanced">List Logs</a></li>
           </ul>
         </div>
         <div class="btn-group">
