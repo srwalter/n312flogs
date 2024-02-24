@@ -31,7 +31,7 @@ async function onLoad() {
         }
         prefillForms();
     } else {
-        await allRoutines();
+        await listLogs();
     }
 }
         </script>
@@ -39,7 +39,7 @@ async function onLoad() {
     <body onload="onLoad();">
     <div class="container body-content">
         <input type="hidden" id="pagination_offset" value="0" />
-        <input type="hidden" id="pagination_count" value="2" />
+        <input type="hidden" id="pagination_count" value="20" />
         <h2>Flight Logs</h2>
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
