@@ -1,23 +1,23 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS createLog //
-CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, end_tach DECIMAL(6,2), end_hobbs DECIMAL(6,2), start_oil DECIMAL(2,2), oil_added DECIMAL(2,2), note VARCHAR(255), OUT logNumber INT)
+CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
 BEGIN
-    INSERT INTO logs (pilot, day, end_tach, end_hobs, start_oil, oil_added, note)
-        VALUES (pilot, day, end_tach, end_hobbs, start_oil, oil_added, node);
+    INSERT INTO logs (pilot, day, end_tach, end_hobbs, start_oil, oil_added, note)
+        VALUES (pilot, day, endTach, endHobbs, startOil, oilAdded, note);
     SET logNumber = LAST_INSERT_ID();
 END //
 
 DROP PROCEDURE IF EXISTS modifyLog //
-CREATE PROCEDURE modifyLog (logNumber INT, pilot VARCHAR(255), day DATE, end_tach DECIMAL(6,2), end_hobbs DECIMAL(6,2), start_oil DECIMAL(2,2), oil_added DECIMAL(2,2), note VARCHAR(255), OUT result VARCHAR(255))
+CREATE PROCEDURE modifyLog (logNumber INT, pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
 BEGIN
     UPDATE logs as l SET
         l.pilot = pilot,
         l.day = day,
-        l.end_tach = end_tach,
-        l.end_hobbs = end_hobbs,
-        l.start_oil = start_oil,
-        l.oil_added = oil_added,
+        l.end_tach = endTach,
+        l.end_hobbs = endHobbs,
+        l.start_oil = startOil,
+        l.oil_added = oilAdded,
         l.note = note
         WHERE l.entry = logNumber;
     SET result = "Success";
@@ -31,7 +31,7 @@ BEGIN
 END //
 
 DROP PROCEDURE IF EXISTS listLogs //
-CREATE PROCEDURE listTransactions (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
+CREATE PROCEDURE listLogs (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
 BEGIN
 	SELECT *
             FROM logs ORDER BY day
