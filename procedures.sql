@@ -129,6 +129,21 @@ BEGIN
     SET result = "Success";
 END //
 
+DROP PROCEDURE IF EXISTS planeStatus //
+CREATE PROCEDURE planeStatus ()
+BEGIN
+    DECLARE current_tach DECIMAL(8,2);
+
+    SELECT MAX(endTach) FROM logs INTO current_tach;
+
+    SELECT name, last + frequency AS next,
+        last + frequency - current_tach AS remaining
+        FROM hourlyMaint;
+
+    SELECT name, ADDDATE(last, frequency) AS next,
+        DATEDIFF(ADDDATE(last, frequency), NOW()) AS remaining
+        FROM timedMaint;
+END //
 
 DROP PROCEDURE IF EXISTS listRoles //
 CREATE PROCEDURE listRoles ()
