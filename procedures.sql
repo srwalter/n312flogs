@@ -70,6 +70,16 @@ BEGIN
     SET id = LAST_INSERT_ID();
 END //
 
+DROP PROCEDURE IF EXISTS listHourlyMaints //
+CREATE PROCEDURE listHourlyMaints (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
+BEGIN
+	SELECT *
+            FROM hourlyMaint ORDER BY name
+            LIMIT paginate_count
+            OFFSET paginate_offset;
+        SELECT COUNT(*) INTO paginate_total FROM hourlyMaint;
+END //
+
 
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 

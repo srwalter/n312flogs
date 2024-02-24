@@ -18,6 +18,12 @@ async function listLogs () {
     activateProcedure('listLogs');
 }
 
+async function listHourlyMaints () {
+    clearUI();
+    await callProcedureListEditDelete('HourlyMaint');
+    activateProcedure('listHourlyMaints');
+}
+
 async function onLoad() {
     if (!await checkLogin()) {
         return;
@@ -26,6 +32,8 @@ async function onLoad() {
     if (q['proc']) {
         if (q['proc'] == 'listLogsAdvanced') {
             await listLogs();
+        } else if (q['proc'] == 'listHourlyMaints') {
+            await listHourlyMaints();
         } else {
             await callProcedure(q['proc']);
         }
@@ -48,6 +56,15 @@ async function onLoad() {
           <ul class="dropdown-menu">
               <li><a href="?proc=createLogSimple">Create Log</a></li>
             <li><a href="?proc=listLogs&autosubmit=listLogs">List Logs</a></li>
+          </ul>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            MX <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+              <li><a href="?proc=createHourlyMaint">Create Hourly Maintenance</a></li>
+            <li><a href="?proc=listHourlyMaints">List Hourly Maintenance</a></li>
           </ul>
         </div>
         <div class="btn-group">
