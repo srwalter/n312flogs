@@ -80,6 +80,24 @@ BEGIN
         SELECT COUNT(*) INTO paginate_total FROM hourlyMaint;
 END //
 
+DROP PROCEDURE IF EXISTS modifyHourlyMaint //
+CREATE PROCEDURE modifyHourlyMaint (_id INT, name VARCHAR(128), frequency DECIMAL(8,2), last DECIMAL(8,2), OUT result VARCHAR(255))
+BEGIN
+    UPDATE hourlyMaint as h SET
+        h.name = name,
+        h.frequency = frequency,
+        h.last = last
+        WHERE h.id = _id;
+    SET result = "Success";
+END //
+
+DROP PROCEDURE IF EXISTS deleteHourlyMaint //
+CREATE PROCEDURE deleteHourlyMaint (_id INT, OUT result VARCHAR(255))
+BEGIN
+    DELETE FROM hourlyMaint WHERE hourlyMaint.id = _id;
+    SET result = "Success";
+END //
+
 
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 
