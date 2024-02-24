@@ -56,12 +56,6 @@ BEGIN
         SELECT COUNT(*) INTO paginate_total FROM logs;
 END //
 
-DROP PROCEDURE IF EXISTS listRoles //
-CREATE PROCEDURE listRoles ()
-BEGIN
-	SELECT 'logs_normalUser', 'Normal';
-END //
-
 DROP PROCEDURE IF EXISTS createHourlyMaint //
 CREATE PROCEDURE createHourlyMaint (name VARCHAR(128), frequency DECIMAL(8,2), last DECIMAL(8,2), OUT id INT)
 BEGIN
@@ -98,6 +92,49 @@ BEGIN
     SET result = "Success";
 END //
 
+
+DROP PROCEDURE IF EXISTS createTimedMaint //
+CREATE PROCEDURE createTimedMaint (name VARCHAR(128), frequency INT, last DATE, OUT id INT)
+BEGIN
+    INSERT INTO timedMaint (name, frequency, last)
+        VALUES (name, frequency, last);
+    SET id = LAST_INSERT_ID();
+END //
+
+DROP PROCEDURE IF EXISTS listTimedMaints //
+CREATE PROCEDURE listTimedMaints (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
+BEGIN
+	SELECT *
+            FROM timedMaint ORDER BY name
+            LIMIT paginate_count
+            OFFSET paginate_offset;
+        SELECT COUNT(*) INTO paginate_total FROM hourlyMaint;
+END //
+
+DROP PROCEDURE IF EXISTS modifyTimedMaint //
+CREATE PROCEDURE modifyTimedMaint (_id INT, name VARCHAR(128), frequency INT, last DATE, OUT result VARCHAR(255))
+BEGIN
+    UPDATE timedMaint as h SET
+        h.name = name,
+        h.frequency = frequency,
+        h.last = last
+        WHERE h.id = _id;
+    SET result = "Success";
+END //
+
+DROP PROCEDURE IF EXISTS deleteTimedMaint //
+CREATE PROCEDURE deleteTimedMaint (_id INT, OUT result VARCHAR(255))
+BEGIN
+    DELETE FROM timedMaint WHERE timedMaint.id = _id;
+    SET result = "Success";
+END //
+
+
+DROP PROCEDURE IF EXISTS listRoles //
+CREATE PROCEDURE listRoles ()
+BEGIN
+	SELECT 'logs_normalUser', 'Normal';
+END //
 
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 

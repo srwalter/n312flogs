@@ -24,6 +24,12 @@ async function listHourlyMaints () {
     activateProcedure('listHourlyMaints');
 }
 
+async function listTimedMaints () {
+    clearUI();
+    await callProcedureListEditDelete('TimedMaint');
+    activateProcedure('listTimedMaints');
+}
+
 async function onLoad() {
     if (!await checkLogin()) {
         return;
@@ -34,6 +40,8 @@ async function onLoad() {
             await listLogs();
         } else if (q['proc'] == 'listHourlyMaints') {
             await listHourlyMaints();
+        } else if (q['proc'] == 'listTimedMaints') {
+            await listTimedMaints();
         } else {
             await callProcedure(q['proc']);
         }
@@ -65,6 +73,8 @@ async function onLoad() {
           <ul class="dropdown-menu">
               <li><a href="?proc=createHourlyMaint">Create Hourly Maintenance</a></li>
             <li><a href="?proc=listHourlyMaints">List Hourly Maintenance</a></li>
+              <li><a href="?proc=createTimedMaint">Create Timed Maintenance</a></li>
+            <li><a href="?proc=listTimedMaints">List Timed Maintenance</a></li>
           </ul>
         </div>
         <div class="btn-group">
