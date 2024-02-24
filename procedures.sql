@@ -1,5 +1,21 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS createLogSimple //
+CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
+SQL SECURITY INVOKER
+BEGIN
+    DECLARE user VARCHAR(255);
+    SET user = CURRENT_USER();
+    SET user = CASE
+        WHEN user = "srwalter@localhost" THEN "Steven"
+        WHEN user = "jim@localhost" THEN "Jim"
+        WHEN user = "mike@localhost" THEN "Mike"
+        WHEN user = "dan@localhost" THEN "Dan"
+        WHEN user = "vickus@localhost" THEN "Vickus"
+    END;
+    CALL createLog(user, NOW(), endTach, endHobbs, startOil, oilAdded, note, logNumber);
+END //
+
 DROP PROCEDURE IF EXISTS createLog //
 CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
 BEGIN
