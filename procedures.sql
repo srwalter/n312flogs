@@ -1,10 +1,36 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS createLogSimple //
-CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
+CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
+    startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
 SQL SECURITY INVOKER
-BEGIN
+func: BEGIN
+    DECLARE lastHobbs DECIMAL(8,2);
+    DECLARE lastTach DECIMAL(8,2);
     DECLARE user VARCHAR(255);
+    DECLARE logNumber INT;
+
+    SELECT MAX(logs.endHobbs) FROM logs INTO lastHobbs;
+    SELECT MAX(logs.endTach) FROM logs INTO lastTach;
+
+    IF (startTach IS NULL) THEN
+        SET startTach = lastTach;
+    END IF;
+
+    IF (startHobbs IS NULL) THEN
+        SET startHobbs = lastHobbs;
+    END IF;
+
+    IF (startHobbs != lastHobbs) THEN
+        SET result = "Start hobbs doesn't match last hobbs entry!";
+        LEAVE func;
+    END IF;
+
+    IF (startTach != lastTach) THEN
+        SET result = "Start tach doesn't match last tach entry!";
+        LEAVE func;
+    END IF;
+
     SET user = CURRENT_USER();
     SET user = CASE
         WHEN user = "srwalter@localhost" THEN "Steven"
@@ -13,25 +39,46 @@ BEGIN
         WHEN user = "dan@localhost" THEN "Dan"
         WHEN user = "vickus@localhost" THEN "Vickus"
     END;
-    CALL createLog(user, NOW(), endTach, endHobbs, startOil, oilAdded, note, logNumber);
+    CALL createLog(user, NOW(), endTach, endHobbs, startTach, startHobbs, departureAirport, destinationAirport, startOil, oilAdded, note, logNumber);
+    SET result = "Success";
 END //
 
 DROP PROCEDURE IF EXISTS createLog //
-CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
+CREATE PROCEDURE createLog (pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2),
+    departureAirport VARCHAR(16), destinationAirport VARCHAR(16), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT logNumber INT)
 BEGIN
-    INSERT INTO logs (pilot, day, endTach, endHobbs, startOil, oilAdded, note)
-        VALUES (pilot, day, endTach, endHobbs, startOil, oilAdded, note);
+    DECLARE lastHobbs DECIMAL(8,2);
+    DECLARE lastTach DECIMAL(8,2);
+
+    SELECT MAX(logs.endHobbs) FROM logs INTO lastHobbs;
+    SELECT MAX(logs.endTach) FROM logs INTO lastTach;
+
+    IF (startTach IS NULL) THEN
+        SET startTach = lastTach;
+    END IF;
+
+    IF (startHobbs IS NULL) THEN
+        SET startHobbs = lastHobbs;
+    END IF;
+
+    INSERT INTO logs (pilot, day, endTach, endHobbs, startTach, startHobbs, departureAirport, destinationAirport, startOil, oilAdded, note)
+        VALUES (pilot, day, endTach, endHobbs, startTach, startHobbs, departureAirport, destinationAirport, startOil, oilAdded, note);
     SET logNumber = LAST_INSERT_ID();
 END //
 
 DROP PROCEDURE IF EXISTS modifyLog //
-CREATE PROCEDURE modifyLog (_entry INT, pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
+CREATE PROCEDURE modifyLog (_entry INT, pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2),
+    departureAirport VARCHAR(16), destinationAirport VARCHAR(16), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
 BEGIN
     UPDATE logs as l SET
         l.pilot = pilot,
         l.day = day,
         l.endTach = endTach,
         l.endHobbs = endHobbs,
+        l.startTach = startTach,
+        l.startHobbs = startHobbs,
+        l.departureAirport = departureAirport,
+        l.destinationAirport = destinationAirport,
         l.startOil = startOil,
         l.oiladded = oilAdded,
         l.note = note
@@ -49,8 +96,9 @@ END //
 DROP PROCEDURE IF EXISTS listLogs //
 CREATE PROCEDURE listLogs (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
 BEGIN
-	SELECT *
-            FROM logs ORDER BY day
+	SELECT entry AS _entry, day, pilot, departureAirport, destinationAirport, startTach, endTach, endTach - startTach AS tachHours,
+        ROUND((endTach - startTach) / (endHobbs - startHobbs) * 100) as tachHobbsPercent, startHobbs, endHobbs, endHobbs - startHobbs AS hobbsHours
+            FROM logs ORDER BY endTach
             LIMIT paginate_count
             OFFSET paginate_offset;
         SELECT COUNT(*) INTO paginate_total FROM logs;

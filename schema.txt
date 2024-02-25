@@ -1,10 +1,14 @@
 CREATE TABLE logs (entry INT AUTO_INCREMENT PRIMARY KEY,
     pilot VARCHAR(128) NOT NULL,
     day DATE NOT NULL,
+    startTach DECIMAL(8,2) NOT NULL,
     endTach DECIMAL(8,2) NOT NULL,
+    startHobbs DECIMAL(8,2) NOT NULL,
     endHobbs DECIMAL(8,2) NOT NULL,
     startOil DECIMAL(4,2),
     oilAdded DECIMAL(4,2),
+    departureAirport VARCHAR(16),
+    destinationAirport VARCHAR(16),
     note VARCHAR(255)
     );
 
