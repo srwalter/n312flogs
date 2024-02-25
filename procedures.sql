@@ -1,5 +1,14 @@
 DELIMITER //
 
+DROP PROCEDURE IF EXISTS lastTimes //
+CREATE PROCEDURE lastTimes ()
+func: BEGIN
+    DECLARE lastHobbs DECIMAL(8,2);
+    DECLARE lastTach DECIMAL(8,2);
+
+    SELECT MAX(endTach) AS lastTach, MAX(endHobbs) AS lastHobbs FROM logs;
+END;
+
 DROP PROCEDURE IF EXISTS createLogSimple //
 CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
     startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))

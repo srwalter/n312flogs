@@ -12,6 +12,12 @@
         <script>
 database = "n312flogs";
 
+async function createLogSimple () {
+    await callProcedure('lastTimes');
+    await callProcedure('createLogSimple', false);
+    activateProcedure('lastTimes');
+}
+
 async function listLogs () {
     clearUI();
     await callProcedureListEditDelete('Log');
@@ -42,12 +48,14 @@ async function onLoad() {
             await listHourlyMaints();
         } else if (q['proc'] == 'listTimedMaints') {
             await listTimedMaints();
+        } else if (q['proc'] == 'createLogSimple') {
+            await createLogSimple();
         } else {
             await callProcedure(q['proc']);
         }
         prefillForms();
     } else {
-        await await callProcedure('createLogSimple');
+        await await createLogSimple();
     }
 }
         </script>
