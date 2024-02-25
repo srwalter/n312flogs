@@ -153,10 +153,10 @@ END //
 
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 
-GRANT EXECUTE ON PROCEDURE createLogSimple TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE listLogs TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE planeStatus TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE listHourlyMaint TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE listTimedMaint TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE modifyHourlyMaint TO acct_normalUser;
-GRANT EXECUTE ON PROCEDURE modifyTimedMaint TO acct_normalUser;
+GRANT EXECUTE ON PROCEDURE createLogSimple TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE listLogs TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE planeStatus TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE listHourlyMaints TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE listTimedMaints TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE modifyHourlyMaint TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE modifyTimedMaint TO logs_normalUser;
