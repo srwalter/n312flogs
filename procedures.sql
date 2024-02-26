@@ -213,6 +213,7 @@ CREATE ROLE IF NOT EXISTS logs_normalUser;
 GRANT EXECUTE ON PROCEDURE createLogSimple TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listLogs TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE planeStatus TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE lastTimes TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listHourlyMaints TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listTimedMaints TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE modifyHourlyMaint TO logs_normalUser;
