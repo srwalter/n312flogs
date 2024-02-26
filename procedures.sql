@@ -107,7 +107,7 @@ CREATE PROCEDURE listLogs (paginate_count INT, paginate_offset INT, OUT paginate
 BEGIN
 	SELECT entry AS _entry, day, pilot, departureAirport, destinationAirport, startTach, endTach, endTach - startTach AS tachHours,
         ROUND((endTach - startTach) / (endHobbs - startHobbs) * 100) as tachHobbsPercent, startHobbs, endHobbs, endHobbs - startHobbs AS hobbsHours
-            FROM logs ORDER BY endTach
+            FROM logs ORDER BY endTach DESC
             LIMIT paginate_count
             OFFSET paginate_offset;
         SELECT COUNT(*) INTO paginate_total FROM logs;
