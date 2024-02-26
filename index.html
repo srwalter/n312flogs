@@ -12,6 +12,13 @@
         <script>
 database = "n312flogs";
 
+function make_striped() {
+    const elems = document.querySelectorAll("#wheresthebeef table");
+    for (const e of elems) {
+        e.setAttribute('class', 'table table-striped');
+    }
+}
+
 async function createLogSimple () {
     await callProcedure('lastTimes');
     await callProcedure('createLogSimple', false);
@@ -19,8 +26,12 @@ async function createLogSimple () {
 }
 
 async function listLogs () {
+    await callProcedureFull({proc_name: 'listLogs', activate: true, after_results: make_striped});
+}
+
+async function listLogsAdvanced () {
     clearUI();
-    await callProcedureListEditDelete('Log');
+    await callProcedureListEditDelete('Log', {after_results: make_striped});
     activateProcedure('listLogs');
 }
 
@@ -43,6 +54,8 @@ async function onLoad() {
     var q = parseQueryString(window.location.search);
     if (q['proc']) {
         if (q['proc'] == 'listLogsAdvanced') {
+            await listLogsAdvanced();
+        } else if (q['proc'] == 'listLogs') {
             await listLogs();
         } else if (q['proc'] == 'listHourlyMaints') {
             await listHourlyMaints();
