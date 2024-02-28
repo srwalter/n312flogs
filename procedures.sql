@@ -31,12 +31,27 @@ func: BEGIN
     END IF;
 
     IF (startHobbs != lastHobbs) THEN
-        SET result = "Start hobbs doesn't match last hobbs entry!";
+        SET result = "ERROR:Start hobbs doesn't match last hobbs entry!";
         LEAVE func;
     END IF;
 
     IF (startTach != lastTach) THEN
-        SET result = "Start tach doesn't match last tach entry!";
+        SET result = "ERROR:Start tach doesn't match last tach entry!";
+        LEAVE func;
+    END IF;
+
+    IF (endHobbs = lastHobbs AND endTach = lastTach) THEN
+        SET result = "ERROR:End tach and end hobbs both match last entry!";
+        LEAVE func;
+    END IF;
+
+    IF (endHobbs < lastHobbs) THEN
+        SET result = "ERROR:End hobbs is less than last hobbs!";
+        LEAVE func;
+    END IF;
+
+    IF (endTach < lastTach) THEN
+        SET result = "ERROR:End tach is less than last tach!";
         LEAVE func;
     END IF;
 
