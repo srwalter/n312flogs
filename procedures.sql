@@ -218,6 +218,13 @@ BEGIN
         FROM timedMaint;
 END //
 
+DROP PROCEDURE IF EXISTS runBilling //
+CREATE PROCEDURE runBilling (OUT result VARCHAR(255))
+BEGIN
+    UPDATE logs SET billedDate = NOW() WHERE billedDate IS NULL;
+    SET result = "Success";
+END //
+
 DROP PROCEDURE IF EXISTS listRoles //
 CREATE PROCEDURE listRoles ()
 BEGIN
