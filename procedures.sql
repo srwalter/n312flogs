@@ -129,6 +129,12 @@ BEGIN
         SELECT COUNT(*) INTO paginate_total FROM logs;
 END //
 
+DROP PROCEDURE IF EXISTS getBillingLogs //
+CREATE PROCEDURE getBillingLogs ()
+BEGIN
+	SELECT * FROM logs WHERE billedDate = CURRENT_DATE();
+END //
+
 DROP PROCEDURE IF EXISTS createHourlyMaint //
 CREATE PROCEDURE createHourlyMaint (name VARCHAR(128), frequency DECIMAL(8,2), last DECIMAL(8,2), OUT id INT)
 BEGIN
