@@ -132,7 +132,7 @@ END //
 DROP PROCEDURE IF EXISTS getBillingLogs //
 CREATE PROCEDURE getBillingLogs ()
 BEGIN
-	SELECT * FROM logs WHERE billedDate = CURRENT_DATE();
+    SELECT day, pilot, endTach - startTach as tachHours FROM logs WHERE billedDate = CURRENT_DATE();
 END //
 
 DROP PROCEDURE IF EXISTS createHourlyMaint //
