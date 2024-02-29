@@ -9,7 +9,8 @@ CREATE TABLE logs (entry INT AUTO_INCREMENT PRIMARY KEY,
     oilAdded DECIMAL(4,2),
     departureAirport VARCHAR(16),
     destinationAirport VARCHAR(16),
-    note VARCHAR(255)
+    note VARCHAR(255),
+    billedDate DATE
     );
 
 CREATE TABLE hourlyMaint (id INT AUTO_INCREMENT PRIMARY KEY,

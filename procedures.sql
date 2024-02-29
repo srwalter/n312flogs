@@ -92,7 +92,7 @@ END //
 
 DROP PROCEDURE IF EXISTS modifyLog //
 CREATE PROCEDURE modifyLog (_entry INT, pilot VARCHAR(255), day DATE, endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2),
-    departureAirport VARCHAR(16), destinationAirport VARCHAR(16), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
+    departureAirport VARCHAR(16), destinationAirport VARCHAR(16), startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), billedDate DATE, OUT result VARCHAR(255))
 BEGIN
     UPDATE logs as l SET
         l.pilot = pilot,
@@ -105,6 +105,7 @@ BEGIN
         l.destinationAirport = destinationAirport,
         l.startOil = startOil,
         l.oiladded = oilAdded,
+        l.billedDate = billedDate,
         l.note = note
         WHERE l.entry = _entry;
     SET result = "Success";
@@ -121,7 +122,7 @@ DROP PROCEDURE IF EXISTS listLogs //
 CREATE PROCEDURE listLogs (paginate_count INT, paginate_offset INT, OUT paginate_total INT)
 BEGIN
 	SELECT entry AS _entry, day, pilot, startTach, endTach, endTach - startTach AS tachHours,
-        ROUND((endTach - startTach) / (endHobbs - startHobbs) * 100) as tachHobbsPercent, startHobbs, endHobbs, endHobbs - startHobbs AS hobbsHours, departureAirport, destinationAirport
+        ROUND((endTach - startTach) / (endHobbs - startHobbs) * 100) as tachHobbsPercent, startHobbs, endHobbs, endHobbs - startHobbs AS hobbsHours, departureAirport, destinationAirport, billedDate
             FROM logs ORDER BY endTach DESC
             LIMIT paginate_count
             OFFSET paginate_offset;
