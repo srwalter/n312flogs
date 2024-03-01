@@ -226,7 +226,27 @@ END //
 
 DROP PROCEDURE IF EXISTS runBilling //
 CREATE PROCEDURE runBilling (OUT result VARCHAR(255))
-BEGIN
+billingFunc: BEGIN
+    DECLARE min_val DECIMAL(8,2);
+    DECLARE max_val DECIMAL(8,2);
+    DECLARE current_val DECIMAL(8,2);
+
+    -- Get the minimum and maximum values of the sequence column
+    SELECT MIN(startTach), MAX(endTach) FROM logs INTO min_val, max_val;
+
+    -- Check for gaps
+    SET current_val = min_val;
+
+    WHILE current_val < max_val DO
+        IF NOT EXISTS (SELECT * FROM logs WHERE startTach = current_val) THEN
+            -- Gap detected
+            SELECT CONCAT('Gap detected at tach ', current_val) AS result;
+            LEAVE billingFunc;
+        END IF;
+
+        SELECT endTach FROM logs WHERE startTach = current_val INTO current_val;
+    END WHILE;
+
     UPDATE logs SET billedDate = NOW() WHERE billedDate IS NULL;
     SET result = "Success";
 END //
