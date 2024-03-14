@@ -7,7 +7,7 @@ func: BEGIN
     DECLARE lastTach DECIMAL(8,2);
 
     SELECT MAX(endTach) AS lastTach, MAX(endHobbs) AS lastHobbs FROM logs;
-END;
+END //
 
 DROP PROCEDURE IF EXISTS createLogSimple //
 CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
@@ -18,7 +18,7 @@ BEGIN
     SET user = CURRENT_USER();
 
     CALL createLogSimple2(user, endTach, endHobbs, startTach, startHobbs, departureAirport, destinationAirport, startOil, oilAdded, note, result);
-END;
+END //
 
 DROP PROCEDURE IF EXISTS createLogSimple2 //
 CREATE PROCEDURE createLogSimple2 (user VARCHAR(255), endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
@@ -131,7 +131,7 @@ CREATE PROCEDURE listLogs (paginate_count INT, paginate_offset INT, OUT paginate
 BEGIN
 	SELECT entry AS _entry, day, pilot, startTach, endTach, endTach - startTach AS tachHours,
         ROUND((endTach - startTach) / (endHobbs - startHobbs) * 100) as tachHobbsPercent, startHobbs, endHobbs, endHobbs - startHobbs AS hobbsHours, departureAirport, destinationAirport, billedDate,
-            note as _note, startOil as _startOil, oilAdded as _oilAdded
+                note as _note, startOil as _startOil, oilAdded as _oilAdded
             FROM logs ORDER BY endTach DESC
             LIMIT paginate_count
             OFFSET paginate_offset;
@@ -233,6 +233,36 @@ BEGIN
         FROM timedMaint;
 END //
 
+DROP PROCEDURE IF EXISTS createSquawk //
+CREATE PROCEDURE createSquawk (description VARCHAR(1024), OUT result VARCHAR(255))
+BEGIN
+    INSERT INTO squawks (description) VALUES (description);
+    SET result = "Success";
+END //
+
+DROP PROCEDURE IF EXISTS listSquawks //
+CREATE PROCEDURE listSquawks ()
+BEGIN
+    SELECT id AS _id, description FROM squawks;
+END //
+
+DROP PROCEDURE IF EXISTS modifySquawk //
+CREATE PROCEDURE modifySquawk (_id INT, description VARCHAR(1024), OUT result VARCHAR(255))
+BEGIN
+    UPDATE squawks SET
+        squawks.description = description
+        WHERE id = _id;
+    SET result = "Success";
+END //
+
+DROP PROCEDURE IF EXISTS deleteSquawk //
+CREATE PROCEDURE deleteSquawk (id INT, OUT result VARCHAR(255))
+BEGIN
+    DELETE FROM squawks
+        WHERE squawks.id = id;
+    SET result = "Success";
+END //
+
 DROP PROCEDURE IF EXISTS runBilling //
 CREATE PROCEDURE runBilling (OUT result VARCHAR(255))
 billingFunc: BEGIN
@@ -268,6 +298,10 @@ END //
 
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 
+GRANT EXECUTE ON PROCEDURE createSquawk TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE listSquawks TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE modifySquawk TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE deleteSquawk TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE createLogSimple TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE createLogSimple2 TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listLogs TO logs_normalUser;

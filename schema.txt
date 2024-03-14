@@ -24,3 +24,7 @@ CREATE TABLE timedMaint (id INT AUTO_INCREMENT PRIMARY KEY,
     frequency INT NOT NULL,
     last DATE NOT NULL
     );
+
+CREATE TABLE squawks (id INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(1024) NOT NULL
+    );

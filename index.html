@@ -25,8 +25,17 @@ async function createLogSimple () {
     activateProcedure('lastTimes');
 }
 
+async function planeStatus () {
+    await callProcedureFull({proc_name: 'planeStatus', show_header: true, show_button: false, activate: true});
+    await listSquawks();
+}
+
 async function listLogs () {
     await callProcedureFull({proc_name: 'listLogs', activate: true, after_results: make_striped});
+}
+
+async function listSquawks () {
+    await callProcedureListEditDelete('Squawk', {show_header: true, show_button: false, activate: true});
 }
 
 async function listLogsAdvanced () {
@@ -57,6 +66,10 @@ async function onLoad() {
             await listLogsAdvanced();
         } else if (q['proc'] == 'listLogs') {
             await listLogs();
+        } else if (q['proc'] == 'listSquawks') {
+            await listSquawks();
+        } else if (q['proc'] == 'planeStatus') {
+            await planeStatus();
         } else if (q['proc'] == 'listHourlyMaints') {
             await listHourlyMaints();
         } else if (q['proc'] == 'listTimedMaints') {
@@ -92,7 +105,8 @@ async function onLoad() {
             MX <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li><a href="?proc=planeStatus&autosubmit=planeStatus">Plane Status</a></li>
+            <li><a href="?proc=planeStatus">Plane Status</a></li>
+            <li><a href="?proc=createSquawk">Create Squawk</a></li>
             <li><a href="?proc=createHourlyMaint">Create Hourly Maintenance</a></li>
             <li><a href="?proc=listHourlyMaints">List Hourly Maintenance</a></li>
             <li><a href="?proc=createTimedMaint">Create Timed Maintenance</a></li>
