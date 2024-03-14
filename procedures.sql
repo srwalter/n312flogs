@@ -13,10 +13,19 @@ DROP PROCEDURE IF EXISTS createLogSimple //
 CREATE PROCEDURE createLogSimple (endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
     startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
 SQL SECURITY INVOKER
+BEGIN
+    DECLARE user VARCHAR(255);
+    SET user = CURRENT_USER();
+
+    CALL createLogSimple2(user, endTach, endHobbs, startTach, startHobbs, departureAirport, destinationAirport, startOil, oilAdded, note, result);
+END;
+
+DROP PROCEDURE IF EXISTS createLogSimple2 //
+CREATE PROCEDURE createLogSimple2 (user VARCHAR(255), endTach DECIMAL(8,2), endHobbs DECIMAL(8,2), startTach DECIMAL(8,2), startHobbs DECIMAL(8,2), departureAirport VARCHAR(16), destinationAirport VARCHAR(16),
+    startOil DECIMAL(4,2), oilAdded DECIMAL(4,2), note VARCHAR(255), OUT result VARCHAR(255))
 func: BEGIN
     DECLARE lastHobbs DECIMAL(8,2);
     DECLARE lastTach DECIMAL(8,2);
-    DECLARE user VARCHAR(255);
     DECLARE logNumber INT;
 
     SELECT MAX(logs.endHobbs) FROM logs INTO lastHobbs;
@@ -55,7 +64,6 @@ func: BEGIN
         LEAVE func;
     END IF;
 
-    SET user = CURRENT_USER();
     SET user = CASE
         WHEN user = "srwalter@localhost" THEN "Steven"
         WHEN user = "jim@localhost" THEN "Jim"
@@ -260,6 +268,7 @@ END //
 CREATE ROLE IF NOT EXISTS logs_normalUser;
 
 GRANT EXECUTE ON PROCEDURE createLogSimple TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE createLogSimple2 TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listLogs TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE planeStatus TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE lastTimes TO logs_normalUser;
