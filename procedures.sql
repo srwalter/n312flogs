@@ -236,14 +236,14 @@ END //
 DROP PROCEDURE IF EXISTS createSquawk //
 CREATE PROCEDURE createSquawk (description VARCHAR(1024), OUT result VARCHAR(255))
 BEGIN
-    INSERT INTO squawks (description) VALUES (description);
+    INSERT INTO squawks (description, day) VALUES (description, CURDATE());
     SET result = "Success";
 END //
 
 DROP PROCEDURE IF EXISTS listSquawks //
 CREATE PROCEDURE listSquawks ()
 BEGIN
-    SELECT id AS _id, description FROM squawks;
+    SELECT id AS _id, day, description FROM squawks;
 END //
 
 DROP PROCEDURE IF EXISTS modifySquawk //

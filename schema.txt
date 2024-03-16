@@ -26,6 +26,6 @@ CREATE TABLE timedMaint (id INT AUTO_INCREMENT PRIMARY KEY,
     );
 
 CREATE TABLE squawks (id INT AUTO_INCREMENT PRIMARY KEY,
-    day DATE NOT NULL,
+    day DATE,
     description VARCHAR(1024) NOT NULL
     );
