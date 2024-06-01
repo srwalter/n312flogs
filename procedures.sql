@@ -290,6 +290,12 @@ billingFunc: BEGIN
     SET result = "Success";
 END //
 
+DROP PROCEDURE IF EXISTS flightTimeByPilot //
+CREATE PROCEDURE flightTimeByPilot ()
+BEGIN
+    SELECT pilot, SUM(endTach - startTach) AS totalTach, SUM(endHobbs - startHobbs) AS totalHobbs FROM logs WHERE day > DATE(CONCAT(YEAR(CURDATE()),'-01-01')) GROUP BY pilot;
+END //
+
 DROP PROCEDURE IF EXISTS listRoles //
 CREATE PROCEDURE listRoles ()
 BEGIN
@@ -311,3 +317,4 @@ GRANT EXECUTE ON PROCEDURE listHourlyMaints TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE listTimedMaints TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE modifyHourlyMaint TO logs_normalUser;
 GRANT EXECUTE ON PROCEDURE modifyTimedMaint TO logs_normalUser;
+GRANT EXECUTE ON PROCEDURE flightTimeByPilot TO logs_normalUser;
