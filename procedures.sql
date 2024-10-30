@@ -221,12 +221,16 @@ DROP PROCEDURE IF EXISTS planeStatus //
 CREATE PROCEDURE planeStatus ()
 BEGIN
     DECLARE current_tach DECIMAL(8,2);
+    DECLARE last_oil DECIMAL(8,2);
 
     SELECT MAX(endTach) FROM logs INTO current_tach;
+    SELECT last FROM hourlyMaint WHERE name = "Oil Change" INTO last_oil;
 
     SELECT name, last + frequency AS next,
         last + frequency - current_tach AS remaining
         FROM hourlyMaint;
+
+    SELECT SUM(oilAdded) AS oilAdded FROM logs WHERE startTach > last_oil;
 
     SELECT name, ADDDATE(last, frequency) AS next,
         DATEDIFF(ADDDATE(last, frequency), NOW()) AS remaining
