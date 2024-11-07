@@ -247,7 +247,7 @@ END //
 DROP PROCEDURE IF EXISTS listSquawks //
 CREATE PROCEDURE listSquawks ()
 BEGIN
-    SELECT id AS _id, day, description FROM squawks;
+    SELECT id AS _id, day, description FROM squawks WHERE closed IS NULL;
 END //
 
 DROP PROCEDURE IF EXISTS modifySquawk //
@@ -262,7 +262,8 @@ END //
 DROP PROCEDURE IF EXISTS deleteSquawk //
 CREATE PROCEDURE deleteSquawk (id INT, OUT result VARCHAR(255))
 BEGIN
-    DELETE FROM squawks
+    UPDATE squawks
+        SET closed = NOW()
         WHERE squawks.id = id;
     SET result = "Success";
 END //
