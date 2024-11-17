@@ -67,6 +67,9 @@ fn main() -> Result<(), Error> {
 
     for i in info {
         println!("{:?}", i);
+        if i.pilot == "MX" {
+            continue;
+        }
         let inv = get_invoice(&invoices, &i.pilot);
         let query = format!("CALL addtoInvoice({}, '{}', 'Flight', {}, 131, 26)", inv, i.day, i.tach_hours);
         println!("Query: {}", query);
