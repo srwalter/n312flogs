@@ -20,47 +20,54 @@ function make_striped() {
 }
 
 async function createLogSimple () {
-    await callProcedure('lastTimes');
-    await callProcedure('createLogSimple', false);
-    activateProcedure('lastTimes');
+    await new WTB('lastTimes').generate();
+    await new WTB('createLogSimple').generate();
+    WTB.activateProcedure('lastTimes');
 }
 
 async function planeStatus () {
-    await callProcedureFull({proc_name: 'planeStatus', show_header: true, show_button: false, activate: true});
+    await new WTB('planeStatus')
+        .showHeader()
+        .hideButton()
+        .activate();
     await listSquawks();
 }
 
 async function listLogs () {
-    await callProcedureFull({proc_name: 'listLogs', activate: true, after_results: make_striped});
+    await new WTB('listLogs')
+        .afterResults(make_striped)
+        .activate();
 }
 
 async function listSquawks () {
-    await callProcedureListEditDelete('Squawk', {show_header: true, show_button: false, activate: true});
+    await WTB.listEditDelete('Squawk')
+        .showHeader()
+        .hideButton()
+        .activate();
 }
 
 async function listLogsAdvanced () {
-    clearUI();
-    await callProcedureListEditDelete('Log', {after_results: make_striped});
-    activateProcedure('listLogs');
+    WTB.clear();
+    await WTB.listEditDelete('Log')
+        .afterResults(make_striped)
+        .activate();
 }
 
 async function listHourlyMaints () {
-    clearUI();
-    await callProcedureListEditDelete('HourlyMaint');
-    activateProcedure('listHourlyMaints');
+    WTB.clear();
+    await WTB.listEditDelete('HourlyMaint').activate();
 }
 
 async function listTimedMaints () {
-    clearUI();
-    await callProcedureListEditDelete('TimedMaint');
-    activateProcedure('listTimedMaints');
+    WTB.clear();
+    await WTB.listEditDelete('TimedMaint').activate();
 }
 
 async function onLoad() {
     if (!await checkLogin()) {
         return;
     }
-    var q = parseQueryString(window.location.search);
+    var q = WTB.parseQueryString(window.location.search);
     if (q['proc']) {
         if (q['proc'] == 'listLogsAdvanced') {
             await listLogsAdvanced();
@@ -77,9 +84,9 @@ async function onLoad() {
         } else if (q['proc'] == 'createLogSimple') {
             await createLogSimple();
         } else {
-            await callProcedure(q['proc']);
+            await new WTB(q['proc']).generate();
         }
-        prefillForms();
+        WTB.prefillForms();
     } else {
         await await createLogSimple();
     }
